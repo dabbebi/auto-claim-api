@@ -32,7 +32,7 @@ public class UserEntity {
 	@Column(length=8)
 	private String cin;
 	
-	@Column(length=64)
+	@Column(nullable=false, length=64)
 	private String email;
 	
 	@Column(length=8)

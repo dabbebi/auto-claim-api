@@ -10,5 +10,5 @@ public interface ClaimService {
 	public ClaimDetailsResponseModel updateClaim(String publicId, ClaimDetailsRequestModel contract);
 	public ClaimDetailsResponseModel getClaim(String publicId);
 	public ClaimDetailsResponseModel deleteClaim(String publicId);
-	public ArrayList<ClaimDetailsResponseModel> getAllClaims(String contractId);
+	public ArrayList<ClaimDetailsResponseModel> getContractClaims(String contractId);
 }

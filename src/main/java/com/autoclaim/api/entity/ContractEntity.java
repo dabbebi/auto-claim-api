@@ -35,7 +35,7 @@ public class ContractEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
 	private UserEntity user;
 	
-	@Column
+	@Column(length=16)
 	private String VehicleRegistrationNo;
 	
 	@OneToMany(cascade = CascadeType.ALL)
