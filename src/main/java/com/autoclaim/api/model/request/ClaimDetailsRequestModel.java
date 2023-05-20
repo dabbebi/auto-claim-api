@@ -3,10 +3,20 @@ package com.autoclaim.api.model.request;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
+import org.springframework.validation.annotation.Validated;
+
+@Validated
 public class ClaimDetailsRequestModel {
 	
+	@NotNull
 	private Date accidentDate;
+	
+	@NotNull
 	private String contractId;
+	
+	
     private ArrayList<String> pictures;
     
 	public Date getAccidentDate() {

@@ -2,6 +2,8 @@ package com.autoclaim.api.controller;
 
 import java.util.ArrayList;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,7 @@ public class ContractController {
 	ContractService contractService;
 	
 	@PostMapping
-	public ContractDetailsResponseModel createContract(@RequestBody ContractDetailsRequestModel contract) {
+	public ContractDetailsResponseModel createContract(@Valid @RequestBody ContractDetailsRequestModel contract) {
 		return contractService.createContract(contract);
 	}
 	
@@ -33,13 +35,13 @@ public class ContractController {
 		return contractService.getContract(id);
 	}
 	
-	@GetMapping(path="/user/{id}")
-	public ArrayList<ContractDetailsResponseModel> getAllContracts(@PathVariable String id) {
-		return contractService.getAllContract(id);
+	@GetMapping
+	public ArrayList<ContractDetailsResponseModel> getAllContracts() {
+		return contractService.getAllContract();
 	}
 	
 	@PutMapping(path="/{id}")
-	public ContractDetailsResponseModel updateContract(@PathVariable String id, @RequestBody ContractDetailsRequestModel contract) {
+	public ContractDetailsResponseModel updateContract(@PathVariable String id, @Valid @RequestBody ContractDetailsRequestModel contract) {
 		return contractService.updateContract(id, contract);
 	}
 	
@@ -47,5 +49,4 @@ public class ContractController {
 	public ContractDetailsResponseModel deleteContract(@PathVariable String id) {
 		return contractService.deleteContract(id);
 	}
-
 }

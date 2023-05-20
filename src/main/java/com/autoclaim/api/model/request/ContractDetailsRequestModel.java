@@ -2,13 +2,34 @@ package com.autoclaim.api.model.request;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+import org.springframework.validation.annotation.Validated;
+
+@Validated
 public class ContractDetailsRequestModel {
 
+	@NotNull
     private Date startDate;
+	
+	@NotNull
 	private Date endDate;
-	private String userId;
+	
+	@NotNull
+	@Length(min=3, max=25)
+	private String insuredName;
+	
+	@NotNull
+	@Length(min=3, max=10)
 	private String VehicleRegistrationNo;
 	
+	public String getInsuredName() {
+		return insuredName;
+	}
+	public void setInsuredName(String insuredName) {
+		this.insuredName = insuredName;
+	}
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -20,12 +41,6 @@ public class ContractDetailsRequestModel {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
-	}
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 	public String getVehicleRegistrationNo() {
 		return VehicleRegistrationNo;

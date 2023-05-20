@@ -7,9 +7,15 @@ public class ContractDetailsResponseModel {
 	private String publicId;
     private Date startDate;
 	private Date endDate;
-	private String userId;
+	private String insuredName;
 	private String VehicleRegistrationNo;
 	
+	public String getInsuredName() {
+		return insuredName;
+	}
+	public void setInsuredName(String insuredName) {
+		this.insuredName = insuredName;
+	}
 	public String getPublicId() {
 		return publicId;
 	}
@@ -27,12 +33,6 @@ public class ContractDetailsResponseModel {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
-	}
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 	public String getVehicleRegistrationNo() {
 		return VehicleRegistrationNo;

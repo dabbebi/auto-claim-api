@@ -18,8 +18,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.autoclaim.api.SpringApplicationContext;
-import com.autoclaim.api.model.dto.UserDto;
 import com.autoclaim.api.model.request.UserLoginRequestModel;
+import com.autoclaim.api.model.response.UserDetailsResponseModel;
 import com.autoclaim.api.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -66,7 +66,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 				.compact();
 		
 		UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
-		UserDto currentUser = userService.getUser(userName);
+		UserDetailsResponseModel currentUser = userService.getUser(userName);
 		
 		res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
 		res.addHeader("public_id", currentUser.getPublicId());

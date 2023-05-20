@@ -12,8 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.autoclaim.api.entity.UserEntity;
-import com.autoclaim.api.model.dto.UserDto;
+import com.autoclaim.api.model.request.UserDetailsRequestModel;
 import com.autoclaim.api.model.request.UserPwdUpdateRequestModel;
+import com.autoclaim.api.model.response.UserDetailsResponseModel;
 import com.autoclaim.api.repository.UserRepository;
 import com.autoclaim.api.service.UserService;
 import com.autoclaim.api.shared.Utils;
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 	
-	public UserDto createUser(UserDto user) {
+	public UserDetailsResponseModel createUser(UserDetailsRequestModel user) {
 
 		if(userRepository.findUserByEmail(user.getEmail()) != null)
 			throw new RuntimeException("Email already in use!");
@@ -40,9 +41,9 @@ public class UserServiceImpl implements UserService {
 		BeanUtils.copyProperties(user, userEntity);
 		
 		userEntity.setPublicId(utils.generateRandomString(30));
-		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		userEntity.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		
-		UserDto returnValue = new UserDto();
+		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
 		UserEntity createdUser = userRepository.save(userEntity);
 		BeanUtils.copyProperties(createdUser, returnValue);
 		
@@ -54,45 +55,45 @@ public class UserServiceImpl implements UserService {
 		
 		if(userEntity == null) throw new UsernameNotFoundException(email);
 		
-		return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<GrantedAuthority>());
+		return new User(userEntity.getEmail(), userEntity.getPassword(), new ArrayList<GrantedAuthority>());
 	}
 
-	public UserDto getUser(String email) {
+	public UserDetailsResponseModel getUser(String email) {
 		UserEntity userEntity = userRepository.findUserByEmail(email);
 		
 		if(userEntity == null) throw new UsernameNotFoundException(email);
 		
-		UserDto userDto = new UserDto();
+		UserDetailsResponseModel userDto = new UserDetailsResponseModel();
 		BeanUtils.copyProperties(userEntity, userDto);
 		
 		return userDto;
 	}
 
-	public UserDto getUserByPublicId(String publicId) {
+	public UserDetailsResponseModel getUserByPublicId(String publicId) {
 
 		UserEntity storedUser = userRepository.findUserByPublicId(publicId);
 		
 		if(storedUser == null) throw new RuntimeException("User with public id " + publicId + " not found!");
 		
-		UserDto returnValue = new UserDto();
+		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
 		BeanUtils.copyProperties(storedUser, returnValue);
 		return returnValue;
 	}
 
-	public ArrayList<UserDto> getAllUsers() {
+	public ArrayList<UserDetailsResponseModel> getAllUsers() {
 		
 		ArrayList<UserEntity> allUsers = (ArrayList<UserEntity>) userRepository.findAll();
-		ArrayList<UserDto> returnValue = new ArrayList<UserDto>();
+		ArrayList<UserDetailsResponseModel> returnValue = new ArrayList<UserDetailsResponseModel>();
 		
 		for(int i = 0; i < allUsers.size(); i++) {
-			UserDto tempUser = new UserDto();
+			UserDetailsResponseModel tempUser = new UserDetailsResponseModel();
 			BeanUtils.copyProperties(allUsers.get(i), tempUser);
 			returnValue.add(tempUser);
 		}
 		return returnValue;
 	}
 
-	public UserDto updateUser(String publicId, UserDto user) {
+	public UserDetailsResponseModel updateUser(String publicId, UserDetailsRequestModel user) {
 		
 		UserEntity storedUser= userRepository.findUserByPublicId(publicId);
 		if(storedUser == null) throw new RuntimeException("User with public id " + publicId + " not found!");
@@ -103,38 +104,38 @@ public class UserServiceImpl implements UserService {
 		storedUser.setTelephone(user.getTelephone());
 		
 		UserEntity updatedUser = userRepository.save(storedUser);
-		UserDto returnValue = new UserDto();
+		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
 		BeanUtils.copyProperties(updatedUser, returnValue);
 		
 		return returnValue;
 	}
 
-	public UserDto deleteUser(String publicId) {
+	public UserDetailsResponseModel deleteUser(String publicId) {
 		
 		UserEntity storedUser= userRepository.findUserByPublicId(publicId);
 		if(storedUser == null) throw new RuntimeException("User with public id " + publicId + " not found!");
 		
 		userRepository.delete(storedUser);
-		UserDto returnValue = new UserDto();
+		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
 		BeanUtils.copyProperties(storedUser, returnValue);
 		
 		return returnValue;
 	}
 
-	public UserDto updatePassword(String publicId, UserPwdUpdateRequestModel passwordDetails) {
+	public UserDetailsResponseModel updatePassword(String publicId, UserPwdUpdateRequestModel passwordDetails) {
 
 		UserEntity storedUser= userRepository.findUserByPublicId(publicId);
 		if(storedUser == null) throw new RuntimeException("User with public id " + publicId + " not found!");
 		
-		String stoderPassword = storedUser.getEncryptedPassword();
+		String stoderPassword = storedUser.getPassword();
 		String providedPassword = passwordDetails.getOldPassword();
 		if(!bCryptPasswordEncoder.matches(providedPassword, stoderPassword))
 			throw new RuntimeException("Provided password for user with public id " + publicId + " is wrong!");
 		
-		storedUser.setEncryptedPassword(bCryptPasswordEncoder.encode(passwordDetails.getNewPassword()));
+		storedUser.setPassword(bCryptPasswordEncoder.encode(passwordDetails.getNewPassword()));
 		userRepository.save(storedUser);
 		
-		UserDto returnValue = new UserDto();
+		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
 		BeanUtils.copyProperties(storedUser, returnValue);
 		
 		return returnValue;

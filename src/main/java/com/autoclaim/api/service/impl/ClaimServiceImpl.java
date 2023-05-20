@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.autoclaim.api.entity.ClaimEntity;
 import com.autoclaim.api.entity.ContractEntity;
+import com.autoclaim.api.enums.ClaimStatus;
 import com.autoclaim.api.model.request.ClaimDetailsRequestModel;
 import com.autoclaim.api.model.response.ClaimDetailsResponseModel;
 import com.autoclaim.api.repository.ClaimRepository;
@@ -35,9 +36,10 @@ public class ClaimServiceImpl implements ClaimService {
 		if(contract == null) throw new RuntimeException("User with public id " + claim.getContractId() + " not found!");
 		
 		ClaimEntity claimEntity = new ClaimEntity();
-		BeanUtils.copyProperties(contract, claimEntity);
+		BeanUtils.copyProperties(claim, claimEntity);
 		claimEntity.setCreationDate(new Date());
 		claimEntity.setContract(contract);
+		claimEntity.setStatus(ClaimStatus.OPEN);
 		
 		claimEntity.setPublicId(utils.generateRandomString(30));
 		

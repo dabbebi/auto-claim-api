@@ -10,8 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.autoclaim.api.enums.ClaimStatus;
@@ -36,11 +36,13 @@ public class ClaimEntity {
 	@Column(nullable=false)
 	private ClaimStatus status;
 	
-	@OneToOne
-    @JoinColumn(name = "contract_id", referencedColumnName = "id")
+	@ManyToOne
+	@JoinTable(name = "contract_claim",
+    joinColumns = @JoinColumn(name = "claim_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id"))
 	private ContractEntity contract;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(name = "claim_picture",
     joinColumns = @JoinColumn(name = "claim_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "picture_id", referencedColumnName = "id"))

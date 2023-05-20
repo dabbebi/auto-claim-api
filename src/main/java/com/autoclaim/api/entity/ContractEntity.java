@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -30,19 +29,26 @@ public class ContractEntity {
 	
 	@Column(nullable=false)
 	private Date endDate;
-	
-	@OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-	private UserEntity user;
+
+	@Column(nullable=false)
+	private String insuredName;
 	
 	@Column(length=16)
 	private String VehicleRegistrationNo;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(name = "contract_claim",
     joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "claim_id", referencedColumnName = "id"))
     private Set<ClaimEntity> claims;
+
+	public String getInsuredName() {
+		return insuredName;
+	}
+
+	public void setInsuredName(String insuredName) {
+		this.insuredName = insuredName;
+	}
 
 	public Set<ClaimEntity> getClaims() {
 		return claims;
@@ -84,13 +90,6 @@ public class ContractEntity {
 		this.endDate = endDate;
 	}
 
-	public UserEntity getUser() {
-		return user;
-	}
-
-	public void setUser(UserEntity user) {
-		this.user = user;
-	}
 
 	public String getVehicleRegistrationNo() {
 		return VehicleRegistrationNo;

@@ -1,13 +1,36 @@
 package com.autoclaim.api.model.request;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+import org.springframework.validation.annotation.Validated;
+
+@Validated
 public class UserDetailsRequestModel {
 	
+	@NotNull
+	@Length(min=3, max=25)
 	private String firstName;
+	
+	@NotNull
+	@Length(min=3, max=25)
 	private String lastName;
+	
+	@Length(min=8, max=8)
 	private String cin;
+	
+	@Email
+	@Length(max=64)
 	private String email;
+	
+	@NotNull
+	@Length(min=3, max=25)
 	private String password;
+	
+	@Length(min=8, max=8)
 	private String telephone;
+	
 	private String address;
 	
 	public String getCin() {

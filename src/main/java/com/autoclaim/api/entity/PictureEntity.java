@@ -5,7 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -19,8 +20,10 @@ public class PictureEntity {
 	@Column(nullable=false)
 	private String path;
 	
-	@OneToOne
-    @JoinColumn(name="claim_id", referencedColumnName = "id")
+	@ManyToOne
+	@JoinTable(name = "claim_picture",
+    joinColumns = @JoinColumn(name = "picture_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "claim_id", referencedColumnName = "id"))
     private ClaimEntity claim;
 
 	public Long getId() {

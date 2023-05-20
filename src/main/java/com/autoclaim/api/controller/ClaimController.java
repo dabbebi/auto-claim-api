@@ -2,6 +2,8 @@ package com.autoclaim.api.controller;
 
 import java.util.ArrayList;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,7 @@ public class ClaimController {
 	ClaimService claimService;
 	
 	@PostMapping
-	public ClaimDetailsResponseModel createContract(@RequestBody ClaimDetailsRequestModel claim) {
+	public ClaimDetailsResponseModel createContract(@Valid @RequestBody ClaimDetailsRequestModel claim) {
 		return claimService.createClaim(claim);
 	}
 	
@@ -39,7 +41,7 @@ public class ClaimController {
 	}
 	
 	@PutMapping(path="/{id}")
-	public ClaimDetailsResponseModel updateContract(@PathVariable String id, @RequestBody ClaimDetailsRequestModel claim) {
+	public ClaimDetailsResponseModel updateContract(@PathVariable String id, @Valid @RequestBody ClaimDetailsRequestModel claim) {
 		return claimService.updateClaim(id, claim);
 	}
 	

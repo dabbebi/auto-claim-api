@@ -1,15 +1,9 @@
 package com.autoclaim.api.entity;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -42,21 +36,8 @@ public class UserEntity {
 	private String address;
 	
 	@Column(nullable=false, length=255)
-	private String encryptedPassword;
-	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_contract",
-    joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id"))
-    private Set<ContractEntity> contracts;
+	private String password;
 
-	public Set<ContractEntity> getContracts() {
-		return contracts;
-	}
-
-	public void setContracts(Set<ContractEntity> contracts) {
-		this.contracts = contracts;
-	}
 
 	public String getCin() {
 		return cin;
@@ -122,11 +103,11 @@ public class UserEntity {
 		this.address = address;
 	}
 
-	public String getEncryptedPassword() {
-		return encryptedPassword;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setEncryptedPassword(String encryptedPassword) {
-		this.encryptedPassword = encryptedPassword;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }
