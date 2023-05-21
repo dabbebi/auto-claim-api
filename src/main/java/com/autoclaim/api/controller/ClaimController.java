@@ -40,7 +40,14 @@ public class ClaimController {
 	
 	@GetMapping(path="/contract/all/{id}")
 	public ArrayList<ClaimDetailsResponseModel> getAllContractClaims(@PathVariable String id) {
-		return claimService.getContractClaims(id);
+		return claimService.getAllContractClaims(id);
+	}
+
+	@GetMapping(path="/contract/{id}")
+	public ArrayList<ClaimDetailsResponseModel> getSomeContractClaims(@PathVariable String id,
+																	  @RequestParam(value = "page") int page,
+																	  @RequestParam(value = "limit") int limit) {
+		return claimService.getSomeContractClaims(id, page, limit);
 	}
 	
 	@PutMapping(path="/{id}")

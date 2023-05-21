@@ -106,7 +106,7 @@ public class ClaimServiceImpl implements ClaimService {
 		return returnValue;
 	}
 
-	public ArrayList<ClaimDetailsResponseModel> getContractClaims(String contractNo) {
+	public ArrayList<ClaimDetailsResponseModel> getAllContractClaims(String contractNo) {
 		ContractEntity contract = contractRepository.findContractByContractNo(contractNo);
 		if(contract == null) throw new RuntimeException("Contract with public id " + contractNo + " not found!");
 		
@@ -121,6 +121,26 @@ public class ClaimServiceImpl implements ClaimService {
 			returnValue.add(tempClaim);
 		}
 		
+		return returnValue;
+	}
+
+	@Override
+	public ArrayList<ClaimDetailsResponseModel> getSomeContractClaims(String contractNo, int page, int limit) {
+		ContractEntity contract = contractRepository.findContractByContractNo(contractNo);
+		if(contract == null) throw new RuntimeException("Contract with public id " + contractNo + " not found!");
+
+		Pageable pageRequest = PageRequest.of(page, limit);
+		ArrayList<ClaimEntity> allClaims = claimRepository.findClaimPageByContract(contract, pageRequest);
+
+		ArrayList<ClaimDetailsResponseModel> returnValue = new ArrayList<>();
+
+		for(ClaimEntity claimEntity: allClaims) {
+			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
+			BeanUtils.copyProperties(claimEntity, tempClaim);
+			tempClaim.setContractNo(contractNo);
+			returnValue.add(tempClaim);
+		}
+
 		return returnValue;
 	}
 

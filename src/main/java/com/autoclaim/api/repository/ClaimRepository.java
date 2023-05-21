@@ -2,6 +2,8 @@ package com.autoclaim.api.repository;
 
 import java.util.ArrayList;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -17,4 +19,6 @@ public interface ClaimRepository extends PagingAndSortingRepository<ClaimEntity,
 	public int getMaxId();
 
 	public ArrayList<ClaimEntity> findClaimByContract(ContractEntity contract);
+
+	public ArrayList<ClaimEntity> findClaimPageByContract(ContractEntity contract, Pageable pageable);
 }
