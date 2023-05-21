@@ -1,6 +1,7 @@
 package com.autoclaim.api.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -15,23 +16,32 @@ import com.autoclaim.api.model.request.ContractDetailsRequestModel;
 import com.autoclaim.api.model.response.ContractDetailsResponseModel;
 import com.autoclaim.api.repository.ContractRepository;
 import com.autoclaim.api.service.ContractService;
-import com.autoclaim.api.shared.Utils;
 
 @Service
 public class ContractServiceImpl implements ContractService {
 	
 	@Autowired
 	ContractRepository contractRepository;
-	
-	@Autowired
-	Utils utils;
+
+	private String generateNextContractNumber(Date starDate) {
+
+		int currentYear = starDate.getYear();
+		int max = contractRepository.getMaxId();
+		String currentYearStr = String.valueOf(currentYear);
+		if(currentYearStr.length() > 2) {
+			currentYearStr = currentYearStr.substring(currentYearStr.length() - 2);
+		}
+
+		String contractNo = "CN-" + Long.toString(max + 1) + "-" + currentYearStr;
+		return contractNo;
+	}
 
 	public ContractDetailsResponseModel createContract(ContractDetailsRequestModel contract) {
 		
 		ContractEntity contractEntity = new ContractEntity();
 		BeanUtils.copyProperties(contract, contractEntity);
-		
-		contractEntity.setPublicId(utils.generateRandomString(30));
+
+		contractEntity.setContractNo(generateNextContractNumber(contractEntity.getStartDate()));
 		
 		ContractEntity createdContract = contractRepository.save(contractEntity);
 		
@@ -41,10 +51,10 @@ public class ContractServiceImpl implements ContractService {
 		return returnValue;
 	}
 
-	public ContractDetailsResponseModel updateContract(String publicId, ContractDetailsRequestModel contract) {
+	public ContractDetailsResponseModel updateContract(String contractNo, ContractDetailsRequestModel contract) {
 		
-		ContractEntity storedContract = contractRepository.findContractByPublicId(publicId);
-		if(storedContract == null) throw new RuntimeException("Contract with public id " +publicId + " not found!");
+		ContractEntity storedContract = contractRepository.findContractByContractNo(contractNo);
+		if(storedContract == null) throw new RuntimeException("Contract with number " + contractNo + " not found!");
 		
 		BeanUtils.copyProperties(contract, storedContract);
 		contractRepository.save(storedContract);
@@ -55,9 +65,9 @@ public class ContractServiceImpl implements ContractService {
 		return returnValue;
 	}
 
-	public ContractDetailsResponseModel getContract(String publicId) {
-		ContractEntity storedContract = contractRepository.findContractByPublicId(publicId);
-		if(storedContract == null) throw new RuntimeException("Contract with public id " + publicId + " not found!");
+	public ContractDetailsResponseModel getContract(String contractNo) {
+		ContractEntity storedContract = contractRepository.findContractByContractNo(contractNo);
+		if(storedContract == null) throw new RuntimeException("Contract with number " + contractNo + " not found!");
 		
 		ContractDetailsResponseModel returnValue = new ContractDetailsResponseModel();
 		BeanUtils.copyProperties(storedContract, returnValue);
@@ -65,9 +75,9 @@ public class ContractServiceImpl implements ContractService {
 		return returnValue;
 	}
 
-	public ContractDetailsResponseModel deleteContract(String publicId) {
-		ContractEntity storedContract = contractRepository.findContractByPublicId(publicId);
-		if(storedContract == null) throw new RuntimeException("Contract with public id " +publicId + " not found!");
+	public ContractDetailsResponseModel deleteContract(String contractNo) {
+		ContractEntity storedContract = contractRepository.findContractByContractNo(contractNo);
+		if(storedContract == null) throw new RuntimeException("Contract with number " + contractNo + " not found!");
 		
 		contractRepository.delete(storedContract);
 		

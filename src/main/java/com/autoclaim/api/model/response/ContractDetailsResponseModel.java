@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class ContractDetailsResponseModel {
 
-	private String publicId;
+	private String contractNo;
     private Date startDate;
 	private Date endDate;
 	private String insuredName;
@@ -16,11 +16,11 @@ public class ContractDetailsResponseModel {
 	public void setInsuredName(String insuredName) {
 		this.insuredName = insuredName;
 	}
-	public String getPublicId() {
-		return publicId;
+	public String getContractNo() {
+		return contractNo;
 	}
-	public void setPublicId(String publicId) {
-		this.publicId = publicId;
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 	public Date getStartDate() {
 		return startDate;

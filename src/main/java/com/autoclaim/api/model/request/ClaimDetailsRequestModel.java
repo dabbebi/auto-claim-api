@@ -14,7 +14,7 @@ public class ClaimDetailsRequestModel {
 	private Date accidentDate;
 	
 	@NotNull
-	private String contractId;
+	private String contractNo;
 	
 	
     private ArrayList<String> pictures;
@@ -25,11 +25,11 @@ public class ClaimDetailsRequestModel {
 	public void setAccidentDate(Date accidentDate) {
 		this.accidentDate = accidentDate;
 	}
-	public String getContractId() {
-		return contractId;
+	public String getContractNo() {
+		return contractNo;
 	}
-	public void setContractId(String contractId) {
-		this.contractId = contractId;
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 	public ArrayList<String> getPictures() {
 		return pictures;

@@ -20,7 +20,6 @@ import com.autoclaim.api.model.response.ClaimDetailsResponseModel;
 import com.autoclaim.api.repository.ClaimRepository;
 import com.autoclaim.api.repository.ContractRepository;
 import com.autoclaim.api.service.ClaimService;
-import com.autoclaim.api.shared.Utils;
 
 @Service
 public class ClaimServiceImpl implements ClaimService {
@@ -30,22 +29,30 @@ public class ClaimServiceImpl implements ClaimService {
 	
 	@Autowired
 	ContractRepository contractRepository;
-	
-	@Autowired
-	Utils utils;
 
+	private String generateNextClaimNumber() {
+
+		int max = claimRepository.getMaxId();
+		String currentYearStr = String.valueOf((new Date()).getYear());
+		if(currentYearStr.length() > 2) {
+			currentYearStr = currentYearStr.substring(currentYearStr.length() - 2);
+		}
+
+		String claimNo = "CL-" + Long.toString(max + 1) + "-" + currentYearStr;
+		return claimNo;
+	}
 	public ClaimDetailsResponseModel createClaim(ClaimDetailsRequestModel claim) {
-		ContractEntity contract = contractRepository.findContractByPublicId(claim.getContractId());
-		if(contract == null) throw new RuntimeException("User with public id " + claim.getContractId() + " not found!");
+		ContractEntity contract = contractRepository.findContractByContractNo(claim.getContractNo());
+		if(contract == null) throw new RuntimeException("Contract with number " + claim.getContractNo() + " not found!");
 		
 		ClaimEntity claimEntity = new ClaimEntity();
 		BeanUtils.copyProperties(claim, claimEntity);
+
 		claimEntity.setCreationDate(new Date());
 		claimEntity.setContract(contract);
 		claimEntity.setStatus(ClaimStatus.OPEN);
-		
-		claimEntity.setPublicId(utils.generateRandomString(30));
-		
+		claimEntity.setClaimNo(generateNextClaimNumber());
+
 		ClaimEntity createdClaim = claimRepository.save(claimEntity);
 		
 		Set<ClaimEntity> claims = contract.getClaims();
@@ -56,52 +63,52 @@ public class ClaimServiceImpl implements ClaimService {
 		
 		ClaimDetailsResponseModel returnValue = new ClaimDetailsResponseModel();
 		BeanUtils.copyProperties(createdClaim, returnValue);
-		returnValue.setContractId(createdClaim.getContract().getPublicId());
+		returnValue.setContractNo(createdClaim.getContract().getContractNo());
 		
 		return returnValue;
 	}
 
-	public ClaimDetailsResponseModel updateClaim(String publicId, ClaimDetailsRequestModel claim) {
-		ClaimEntity storedClaim = claimRepository.findClaimByPublicId(publicId);
-		if(storedClaim == null) throw new RuntimeException("Claim with public id " +publicId + " not found!");
+	public ClaimDetailsResponseModel updateClaim(String claimNo, ClaimDetailsRequestModel claim) {
+		ClaimEntity storedClaim = claimRepository.findClaimByClaimNo(claimNo);
+		if(storedClaim == null) throw new RuntimeException("Claim with public id " + claimNo + " not found!");
 		
 		BeanUtils.copyProperties(claim, storedClaim);
 		claimRepository.save(storedClaim);
 		
 		ClaimDetailsResponseModel returnValue = new ClaimDetailsResponseModel();
 		BeanUtils.copyProperties(storedClaim, returnValue);
-		returnValue.setContractId(storedClaim.getContract().getPublicId());
+		returnValue.setContractNo(storedClaim.getContract().getContractNo());
 		
 		return returnValue;
 	}
 
-	public ClaimDetailsResponseModel getClaim(String publicId) {
-		ClaimEntity storedClaim = claimRepository.findClaimByPublicId(publicId);
-		if(storedClaim == null) throw new RuntimeException("Claim with public id " + publicId + " not found!");
+	public ClaimDetailsResponseModel getClaim(String claimNo) {
+		ClaimEntity storedClaim = claimRepository.findClaimByClaimNo(claimNo);
+		if(storedClaim == null) throw new RuntimeException("Claim with public id " + claimNo + " not found!");
 		
 		ClaimDetailsResponseModel returnValue = new ClaimDetailsResponseModel();
 		BeanUtils.copyProperties(storedClaim, returnValue);
-		returnValue.setContractId(storedClaim.getContract().getPublicId());
+		returnValue.setContractNo(storedClaim.getContract().getContractNo());
 		
 		return returnValue;
 	}
 
-	public ClaimDetailsResponseModel deleteClaim(String publicId) {
-		ClaimEntity storedClaim = claimRepository.findClaimByPublicId(publicId);
-		if(storedClaim == null) throw new RuntimeException("Claim with public id " +publicId + " not found!");
+	public ClaimDetailsResponseModel deleteClaim(String claimNo) {
+		ClaimEntity storedClaim = claimRepository.findClaimByClaimNo(claimNo);
+		if(storedClaim == null) throw new RuntimeException("Claim with public id " + claimNo + " not found!");
 		
 		claimRepository.delete(storedClaim);
 		
 		ClaimDetailsResponseModel returnValue = new ClaimDetailsResponseModel();
 		BeanUtils.copyProperties(storedClaim, returnValue);
-		returnValue.setContractId(storedClaim.getContract().getPublicId());
+		returnValue.setContractNo(storedClaim.getContract().getContractNo());
 		
 		return returnValue;
 	}
 
-	public ArrayList<ClaimDetailsResponseModel> getContractClaims(String contractId) {
-		ContractEntity contract = contractRepository.findContractByPublicId(contractId);
-		if(contract == null) throw new RuntimeException("Contract with public id " + contractId + " not found!");
+	public ArrayList<ClaimDetailsResponseModel> getContractClaims(String contractNo) {
+		ContractEntity contract = contractRepository.findContractByContractNo(contractNo);
+		if(contract == null) throw new RuntimeException("Contract with public id " + contractNo + " not found!");
 		
 		ArrayList<ClaimEntity> allClaims = claimRepository.findClaimByContract(contract);
 		
@@ -110,7 +117,7 @@ public class ClaimServiceImpl implements ClaimService {
 		for(ClaimEntity claimEntity: allClaims) {
 			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
 			BeanUtils.copyProperties(claimEntity, tempClaim);
-			tempClaim.setContractId(contractId);
+			tempClaim.setContractNo(contractNo);
 			returnValue.add(tempClaim);
 		}
 		
@@ -127,7 +134,7 @@ public class ClaimServiceImpl implements ClaimService {
 		for(ClaimEntity claimEntity: allClaims) {
 			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
 			BeanUtils.copyProperties(claimEntity, tempClaim);
-			tempClaim.setContractId(claimEntity.getContract().getPublicId());
+			tempClaim.setContractNo(claimEntity.getContract().getContractNo());
 			returnValue.add(tempClaim);
 		}
 
@@ -146,7 +153,7 @@ public class ClaimServiceImpl implements ClaimService {
 		for(ClaimEntity claimEntity: allClaims) {
 			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
 			BeanUtils.copyProperties(claimEntity, tempClaim);
-			tempClaim.setContractId(claimEntity.getContract().getPublicId());
+			tempClaim.setContractNo(claimEntity.getContract().getContractNo());
 			returnValue.add(tempClaim);
 		}
 

@@ -1,5 +1,6 @@
 package com.autoclaim.api.entity;
 
+
 import java.util.Date;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ public class ContractEntity {
 	private Long id;
 	
 	@Column(nullable=false, unique=true)
-	private String publicId;
+	private String contractNo;
 	
 	@Column(nullable=false)
 	private Date startDate;
@@ -66,12 +67,12 @@ public class ContractEntity {
 		this.id = id;
 	}
 
-	public String getPublicId() {
-		return publicId;
+	public String getContractNo() {
+		return contractNo;
 	}
 
-	public void setPublicId(String publicId) {
-		this.publicId = publicId;
+	public void setContractNo(String publicId) {
+		this.contractNo = publicId;
 	}
 
 	public Date getStartDate() {

@@ -25,7 +25,7 @@ public class ClaimEntity {
 	private Long id;
 	
 	@Column(nullable=false, unique=true)
-	private String publicId;
+	private String claimNo;
 	
 	@Column(nullable=false)
 	private Date accidentDate;
@@ -56,12 +56,12 @@ public class ClaimEntity {
 		this.id = id;
 	}
 
-	public String getPublicId() {
-		return publicId;
+	public String getClaimNo() {
+		return claimNo;
 	}
 
-	public void setPublicId(String publicId) {
-		this.publicId = publicId;
+	public void setClaimNo(String publicId) {
+		this.claimNo = publicId;
 	}
 
 	public Date getAccidentDate() {

@@ -6,18 +6,18 @@ import com.autoclaim.api.enums.ClaimStatus;
 
 public class ClaimDetailsResponseModel {
 
-	private String publicId;
+	private String claimNo;
 	private Date accidentDate;
 	private Date creationDate;
 	private ClaimStatus status;
-	private String contractId;
+	private String contractNo;
     private ArrayList<String> pictures;
     
-	public String getPublicId() {
-		return publicId;
+	public String getClaimNo() {
+		return claimNo;
 	}
-	public void setPublicId(String publicId) {
-		this.publicId = publicId;
+	public void setClaimNo(String claimNo) {
+		this.claimNo = claimNo;
 	}
 	public Date getAccidentDate() {
 		return accidentDate;
@@ -37,11 +37,11 @@ public class ClaimDetailsResponseModel {
 	public void setStatus(ClaimStatus status) {
 		this.status = status;
 	}
-	public String getContractId() {
-		return contractId;
+	public String getContractNo() {
+		return contractNo;
 	}
-	public void setContractId(String contractId) {
-		this.contractId = contractId;
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 	public ArrayList<String> getPictures() {
 		return pictures;
