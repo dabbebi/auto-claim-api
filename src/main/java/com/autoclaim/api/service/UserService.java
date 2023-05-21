@@ -13,6 +13,7 @@ public interface UserService extends UserDetailsService {
 	public UserDetailsResponseModel getUser(String email);
 	public UserDetailsResponseModel getUserByPublicId(String publicId);
 	public ArrayList<UserDetailsResponseModel> getAllUsers();
+	public ArrayList<UserDetailsResponseModel> getSomeUsers(int page, int limit);
 	public UserDetailsResponseModel updateUser(String publicId, UserDetailsRequestModel user);
 	public UserDetailsResponseModel updatePassword(String publicId, UserPwdUpdateRequestModel passwordDetails);
 	public UserDetailsResponseModel deleteUser(String publicId);

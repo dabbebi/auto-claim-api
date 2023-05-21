@@ -5,14 +5,7 @@ import java.util.ArrayList;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.autoclaim.api.model.request.ClaimDetailsRequestModel;
 import com.autoclaim.api.model.response.ClaimDetailsResponseModel;
@@ -26,13 +19,23 @@ public class ClaimController {
 	ClaimService claimService;
 	
 	@PostMapping
-	public ClaimDetailsResponseModel createContract(@Valid @RequestBody ClaimDetailsRequestModel claim) {
+	public ClaimDetailsResponseModel createClaim(@Valid @RequestBody ClaimDetailsRequestModel claim) {
 		return claimService.createClaim(claim);
 	}
 	
 	@GetMapping(path="/{id}")
-	public ClaimDetailsResponseModel getContract(@PathVariable String id) {
+	public ClaimDetailsResponseModel getClaim(@PathVariable String id) {
 		return claimService.getClaim(id);
+	}
+
+	@GetMapping(path="/all")
+	public ArrayList<ClaimDetailsResponseModel> getAllClaims(@PathVariable String id) {
+		return claimService.getAllClaims();
+	}
+
+	@GetMapping
+	public ArrayList<ClaimDetailsResponseModel> getSomeClaims(@RequestParam(value = "page") int page, @RequestParam(value = "limit") int limit) {
+		return claimService.getSomeClaims(page, limit);
 	}
 	
 	@GetMapping(path="/contract/{id}")
@@ -41,14 +44,12 @@ public class ClaimController {
 	}
 	
 	@PutMapping(path="/{id}")
-	public ClaimDetailsResponseModel updateContract(@PathVariable String id, @Valid @RequestBody ClaimDetailsRequestModel claim) {
+	public ClaimDetailsResponseModel updateClaim(@PathVariable String id, @Valid @RequestBody ClaimDetailsRequestModel claim) {
 		return claimService.updateClaim(id, claim);
 	}
 	
 	@DeleteMapping(path="/{id}")
-	public ClaimDetailsResponseModel deleteContract(@PathVariable String id) {
+	public ClaimDetailsResponseModel deleteClaim(@PathVariable String id) {
 		return claimService.deleteClaim(id);
 	}
-	
-
 }

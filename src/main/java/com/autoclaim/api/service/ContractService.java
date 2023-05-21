@@ -10,5 +10,6 @@ public interface ContractService {
 	public ContractDetailsResponseModel updateContract(String publicId, ContractDetailsRequestModel contract);
 	public ContractDetailsResponseModel getContract(String publicId);
 	public ContractDetailsResponseModel deleteContract(String publicId);
-	public ArrayList<ContractDetailsResponseModel> getAllContract();
+	public ArrayList<ContractDetailsResponseModel> getAllContracts();
+	public ArrayList<ContractDetailsResponseModel> getSomeContracts(int page, int limit);
 }

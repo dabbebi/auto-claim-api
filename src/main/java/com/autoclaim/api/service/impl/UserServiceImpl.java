@@ -1,9 +1,13 @@
 package com.autoclaim.api.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -85,9 +89,24 @@ public class UserServiceImpl implements UserService {
 		ArrayList<UserEntity> allUsers = (ArrayList<UserEntity>) userRepository.findAll();
 		ArrayList<UserDetailsResponseModel> returnValue = new ArrayList<UserDetailsResponseModel>();
 		
-		for(int i = 0; i < allUsers.size(); i++) {
+		for(UserEntity userEntity: allUsers) {
 			UserDetailsResponseModel tempUser = new UserDetailsResponseModel();
-			BeanUtils.copyProperties(allUsers.get(i), tempUser);
+			BeanUtils.copyProperties(userEntity, tempUser);
+			returnValue.add(tempUser);
+		}
+		return returnValue;
+	}
+
+	@Override
+	public ArrayList<UserDetailsResponseModel> getSomeUsers(int page, int limit) {
+		Pageable pageableRequest = (Pageable) PageRequest.of(page, limit);
+		Page<UserEntity> usersPage = userRepository.findAll(pageableRequest);
+		List<UserEntity> allUsers = usersPage.getContent();
+		ArrayList<UserDetailsResponseModel> returnValue = new ArrayList<>();
+
+		for(UserEntity userEntity: allUsers) {
+			UserDetailsResponseModel tempUser = new UserDetailsResponseModel();
+			BeanUtils.copyProperties(userEntity, tempUser);
 			returnValue.add(tempUser);
 		}
 		return returnValue;

@@ -1,8 +1,13 @@
 package com.autoclaim.api.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.autoclaim.api.entity.ContractEntity;
@@ -72,18 +77,36 @@ public class ContractServiceImpl implements ContractService {
 		return returnValue;
 	}
 
-	public ArrayList<ContractDetailsResponseModel> getAllContract() {
-		
+	public ArrayList<ContractDetailsResponseModel> getAllContracts() {
+
 		ArrayList<ContractEntity> allContracts = (ArrayList<ContractEntity>) contractRepository.findAll();
 		
 		ArrayList<ContractDetailsResponseModel> returnValue = new ArrayList<ContractDetailsResponseModel>();
 		
-		for(int i = 0; i < allContracts.size(); i++) {
+		for(ContractEntity contractEntity: allContracts) {
 			ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
-			BeanUtils.copyProperties(allContracts.get(i), tempContract);
+			BeanUtils.copyProperties(contractEntity, tempContract);
 			returnValue.add(tempContract);
 		}
 		
+		return returnValue;
+	}
+
+	@Override
+	public ArrayList<ContractDetailsResponseModel> getSomeContracts(int page, int limit) {
+
+		Pageable pageable = PageRequest.of(page, limit);
+		Page<ContractEntity> contractsPage = contractRepository.findAll(pageable);
+		List<ContractEntity> allContracts = contractsPage.getContent();
+
+		ArrayList<ContractDetailsResponseModel> returnValue = new ArrayList<>();
+
+		for(ContractEntity contractEntity: allContracts) {
+			ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
+			BeanUtils.copyProperties(contractEntity, tempContract);
+			returnValue.add(tempContract);
+		}
+
 		return returnValue;
 	}
 

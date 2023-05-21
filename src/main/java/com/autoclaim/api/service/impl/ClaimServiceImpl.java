@@ -7,6 +7,9 @@ import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.autoclaim.api.entity.ClaimEntity;
@@ -104,13 +107,49 @@ public class ClaimServiceImpl implements ClaimService {
 		
 		ArrayList<ClaimDetailsResponseModel> returnValue = new ArrayList<ClaimDetailsResponseModel>();
 		
-		for(int i = 0; i < allClaims.size(); i++) {
+		for(ClaimEntity claimEntity: allClaims) {
 			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
-			BeanUtils.copyProperties(allClaims.get(i), tempClaim);
+			BeanUtils.copyProperties(claimEntity, tempClaim);
 			tempClaim.setContractId(contractId);
 			returnValue.add(tempClaim);
 		}
 		
+		return returnValue;
+	}
+
+	@Override
+	public ArrayList<ClaimDetailsResponseModel> getAllClaims() {
+
+		ArrayList<ClaimEntity> allClaims = (ArrayList<ClaimEntity>) claimRepository.findAll();
+
+		ArrayList<ClaimDetailsResponseModel> returnValue = new ArrayList<ClaimDetailsResponseModel>();
+
+		for(ClaimEntity claimEntity: allClaims) {
+			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
+			BeanUtils.copyProperties(claimEntity, tempClaim);
+			tempClaim.setContractId(claimEntity.getContract().getPublicId());
+			returnValue.add(tempClaim);
+		}
+
+		return returnValue;
+	}
+
+	@Override
+	public ArrayList<ClaimDetailsResponseModel> getSomeClaims(int page, int limit) {
+		Pageable pageableRequest = PageRequest.of(page, limit);
+		Page<ClaimEntity> claimEntityPage = claimRepository.findAll(pageableRequest);
+
+		ArrayList<ClaimEntity> allClaims = (ArrayList<ClaimEntity>) claimEntityPage.getContent();
+
+		ArrayList<ClaimDetailsResponseModel> returnValue = new ArrayList<>();
+
+		for(ClaimEntity claimEntity: allClaims) {
+			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
+			BeanUtils.copyProperties(claimEntity, tempClaim);
+			tempClaim.setContractId(claimEntity.getContract().getPublicId());
+			returnValue.add(tempClaim);
+		}
+
 		return returnValue;
 	}
 
