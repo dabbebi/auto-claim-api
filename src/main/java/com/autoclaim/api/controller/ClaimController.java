@@ -38,8 +38,8 @@ public class ClaimController {
 		return claimService.getSomeClaims(page, limit);
 	}
 	
-	@GetMapping(path="/contract/{id}")
-	public ArrayList<ClaimDetailsResponseModel> getContractClaims(@PathVariable String id) {
+	@GetMapping(path="/contract/all/{id}")
+	public ArrayList<ClaimDetailsResponseModel> getAllContractClaims(@PathVariable String id) {
 		return claimService.getContractClaims(id);
 	}
 	
