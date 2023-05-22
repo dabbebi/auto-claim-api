@@ -3,6 +3,7 @@ package com.autoclaim.api.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,9 +36,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		
 		http.cors().and()
 		.csrf().disable().authorizeRequests()
-		.antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
-		.permitAll().anyRequest().authenticated().and()
-		.addFilter(getAuthenticationFilter())
+		.antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
+		.antMatchers(HttpMethod.POST, "/auth/login").permitAll()
+		.anyRequest().authenticated().and()
 		.addFilter(new AuthorizationFilter(authenticationManager()))
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -47,11 +48,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
 	}
-	
-	public AuthenticationFilter getAuthenticationFilter() throws Exception {
-		final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
-		filter.setFilterProcessesUrl("/users/login");
-		return filter;
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
 	}
 
 	@Bean
