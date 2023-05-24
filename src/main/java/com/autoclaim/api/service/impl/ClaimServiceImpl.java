@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.autoclaim.api.model.response.ContractDetailsResponseModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,7 +51,7 @@ public class ClaimServiceImpl implements ClaimService {
 
 		claimEntity.setCreationDate(new Date());
 		claimEntity.setContract(contract);
-		claimEntity.setStatus(ClaimStatus.OPEN);
+		// claimEntity.setStatus(ClaimStatus.OPEN);
 		claimEntity.setClaimNo(generateNextClaimNumber());
 
 		ClaimEntity createdClaim = claimRepository.save(claimEntity);
@@ -63,52 +64,61 @@ public class ClaimServiceImpl implements ClaimService {
 		
 		ClaimDetailsResponseModel returnValue = new ClaimDetailsResponseModel();
 		BeanUtils.copyProperties(createdClaim, returnValue);
-		returnValue.setContractNo(createdClaim.getContract().getContractNo());
+		ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
+		BeanUtils.copyProperties(createdClaim.getContract(), tempContract);
+		returnValue.setContract(tempContract);
 		
 		return returnValue;
 	}
 
 	public ClaimDetailsResponseModel updateClaim(String claimNo, ClaimDetailsRequestModel claim) {
 		ClaimEntity storedClaim = claimRepository.findClaimByClaimNo(claimNo);
-		if(storedClaim == null) throw new RuntimeException("Claim with public id " + claimNo + " not found!");
-		
+		if(storedClaim == null) throw new RuntimeException("Claim with number " + claimNo + " not found!");
+
+		ContractEntity contract = contractRepository.findContractByContractNo(claim.getContractNo());
+		if(contract == null) throw new RuntimeException("Contract with number " + claim.getContractNo() + " not found!");
+
 		BeanUtils.copyProperties(claim, storedClaim);
+		storedClaim.setContract(contract);
 		claimRepository.save(storedClaim);
 		
 		ClaimDetailsResponseModel returnValue = new ClaimDetailsResponseModel();
 		BeanUtils.copyProperties(storedClaim, returnValue);
-		returnValue.setContractNo(storedClaim.getContract().getContractNo());
+		ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
+		BeanUtils.copyProperties(storedClaim.getContract(), tempContract);
+		returnValue.setContract(tempContract);
 		
 		return returnValue;
 	}
 
 	public ClaimDetailsResponseModel getClaim(String claimNo) {
 		ClaimEntity storedClaim = claimRepository.findClaimByClaimNo(claimNo);
-		if(storedClaim == null) throw new RuntimeException("Claim with public id " + claimNo + " not found!");
+		if(storedClaim == null) throw new RuntimeException("Claim with number " + claimNo + " not found!");
 		
 		ClaimDetailsResponseModel returnValue = new ClaimDetailsResponseModel();
 		BeanUtils.copyProperties(storedClaim, returnValue);
-		returnValue.setContractNo(storedClaim.getContract().getContractNo());
+		ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
+		BeanUtils.copyProperties(storedClaim.getContract(), tempContract);
+		returnValue.setContract(tempContract);
 		
 		return returnValue;
 	}
 
 	public ClaimDetailsResponseModel deleteClaim(String claimNo) {
 		ClaimEntity storedClaim = claimRepository.findClaimByClaimNo(claimNo);
-		if(storedClaim == null) throw new RuntimeException("Claim with public id " + claimNo + " not found!");
+		if(storedClaim == null) throw new RuntimeException("Claim with number " + claimNo + " not found!");
 		
 		claimRepository.delete(storedClaim);
 		
 		ClaimDetailsResponseModel returnValue = new ClaimDetailsResponseModel();
 		BeanUtils.copyProperties(storedClaim, returnValue);
-		returnValue.setContractNo(storedClaim.getContract().getContractNo());
 		
 		return returnValue;
 	}
 
 	public ArrayList<ClaimDetailsResponseModel> getAllContractClaims(String contractNo) {
 		ContractEntity contract = contractRepository.findContractByContractNo(contractNo);
-		if(contract == null) throw new RuntimeException("Contract with public id " + contractNo + " not found!");
+		if(contract == null) throw new RuntimeException("Contract with number " + contractNo + " not found!");
 		
 		ArrayList<ClaimEntity> allClaims = claimRepository.findClaimByContract(contract);
 		
@@ -117,7 +127,9 @@ public class ClaimServiceImpl implements ClaimService {
 		for(ClaimEntity claimEntity: allClaims) {
 			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
 			BeanUtils.copyProperties(claimEntity, tempClaim);
-			tempClaim.setContractNo(contractNo);
+			ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
+			BeanUtils.copyProperties(claimEntity.getContract(), tempContract);
+			tempClaim.setContract(tempContract);
 			returnValue.add(tempClaim);
 		}
 		
@@ -127,7 +139,7 @@ public class ClaimServiceImpl implements ClaimService {
 	@Override
 	public ArrayList<ClaimDetailsResponseModel> getSomeContractClaims(String contractNo, int page, int limit) {
 		ContractEntity contract = contractRepository.findContractByContractNo(contractNo);
-		if(contract == null) throw new RuntimeException("Contract with public id " + contractNo + " not found!");
+		if(contract == null) throw new RuntimeException("Contract with number " + contractNo + " not found!");
 
 		Pageable pageRequest = PageRequest.of(page, limit);
 		ArrayList<ClaimEntity> allClaims = claimRepository.findClaimPageByContract(contract, pageRequest);
@@ -137,7 +149,9 @@ public class ClaimServiceImpl implements ClaimService {
 		for(ClaimEntity claimEntity: allClaims) {
 			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
 			BeanUtils.copyProperties(claimEntity, tempClaim);
-			tempClaim.setContractNo(contractNo);
+			ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
+			BeanUtils.copyProperties(claimEntity.getContract(), tempContract);
+			tempClaim.setContract(tempContract);
 			returnValue.add(tempClaim);
 		}
 
@@ -154,7 +168,9 @@ public class ClaimServiceImpl implements ClaimService {
 		for(ClaimEntity claimEntity: allClaims) {
 			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
 			BeanUtils.copyProperties(claimEntity, tempClaim);
-			tempClaim.setContractNo(claimEntity.getContract().getContractNo());
+			ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
+			BeanUtils.copyProperties(claimEntity.getContract(), tempContract);
+			tempClaim.setContract(tempContract);
 			returnValue.add(tempClaim);
 		}
 
@@ -173,10 +189,28 @@ public class ClaimServiceImpl implements ClaimService {
 		for(ClaimEntity claimEntity: allClaims) {
 			ClaimDetailsResponseModel tempClaim = new ClaimDetailsResponseModel();
 			BeanUtils.copyProperties(claimEntity, tempClaim);
-			tempClaim.setContractNo(claimEntity.getContract().getContractNo());
+			ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
+			BeanUtils.copyProperties(claimEntity.getContract(), tempContract);
+			tempClaim.setContract(tempContract);
 			returnValue.add(tempClaim);
 		}
 
+		return returnValue;
+	}
+
+	@Override
+	public ArrayList<ClaimDetailsResponseModel> deleteMultipleClaims(ArrayList<String> claims) {
+		ArrayList<ClaimDetailsResponseModel> returnValue = new ArrayList<ClaimDetailsResponseModel>();
+		for(String claim: claims) {
+			ClaimEntity storedClaim = claimRepository.findClaimByClaimNo(claim);
+			if(storedClaim == null) throw new RuntimeException("Claim with number " + claim + " not found!");
+
+			claimRepository.delete(storedClaim);
+
+			ClaimDetailsResponseModel currentClaim = new ClaimDetailsResponseModel();
+			BeanUtils.copyProperties(storedClaim, currentClaim);
+			returnValue.add(currentClaim);
+		}
 		return returnValue;
 	}
 

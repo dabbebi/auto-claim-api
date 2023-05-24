@@ -22,6 +22,11 @@ public class ContractController {
 	public ContractDetailsResponseModel createContract(@Valid @RequestBody ContractDetailsRequestModel contract) {
 		return contractService.createContract(contract);
 	}
+
+	@PostMapping(path = "/delete")
+	public ArrayList<ContractDetailsResponseModel> deleteMultipleClaims(@RequestBody ArrayList<String> contracts) {
+		return contractService.deleteMultipleContracts(contracts);
+	}
 	
 	@GetMapping(path="/{id}")
 	public ContractDetailsResponseModel getContract(@PathVariable String id) {

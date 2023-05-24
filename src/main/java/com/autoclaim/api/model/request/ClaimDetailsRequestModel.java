@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
+import com.autoclaim.api.enums.ClaimStatus;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
@@ -15,8 +16,10 @@ public class ClaimDetailsRequestModel {
 	
 	@NotNull
 	private String contractNo;
-	
-	
+
+	@NotNull
+	private ClaimStatus status;
+
     private ArrayList<String> pictures;
     
 	public Date getAccidentDate() {
@@ -37,5 +40,12 @@ public class ClaimDetailsRequestModel {
 	public void setPictures(ArrayList<String> pictures) {
 		this.pictures = pictures;
 	}
-    
+
+	public ClaimStatus getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(ClaimStatus status) {
+		this.status = status;
+	}
 }

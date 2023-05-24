@@ -10,7 +10,7 @@ public class ClaimDetailsResponseModel {
 	private Date accidentDate;
 	private Date creationDate;
 	private ClaimStatus status;
-	private String contractNo;
+	private ContractDetailsResponseModel contract;
     private ArrayList<String> pictures;
     
 	public String getClaimNo() {
@@ -37,11 +37,11 @@ public class ClaimDetailsResponseModel {
 	public void setStatus(ClaimStatus status) {
 		this.status = status;
 	}
-	public String getContractNo() {
-		return contractNo;
+	public ContractDetailsResponseModel getContract() {
+		return contract;
 	}
-	public void setContractNo(String contractNo) {
-		this.contractNo = contractNo;
+	public void setContract(ContractDetailsResponseModel contractNo) {
+		this.contract = contractNo;
 	}
 	public ArrayList<String> getPictures() {
 		return pictures;

@@ -22,6 +22,11 @@ public class ClaimController {
 	public ClaimDetailsResponseModel createClaim(@Valid @RequestBody ClaimDetailsRequestModel claim) {
 		return claimService.createClaim(claim);
 	}
+
+	@PostMapping(path = "/delete")
+	public ArrayList<ClaimDetailsResponseModel> deleteMultipleClaims(@RequestBody ArrayList<String> claims) {
+		return claimService.deleteMultipleClaims(claims);
+	}
 	
 	@GetMapping(path="/{id}")
 	public ClaimDetailsResponseModel getClaim(@PathVariable String id) {
@@ -29,7 +34,7 @@ public class ClaimController {
 	}
 
 	@GetMapping(path="/all")
-	public ArrayList<ClaimDetailsResponseModel> getAllClaims(@PathVariable String id) {
+	public ArrayList<ClaimDetailsResponseModel> getAllClaims() {
 		return claimService.getAllClaims();
 	}
 

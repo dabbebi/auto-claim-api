@@ -120,4 +120,20 @@ public class ContractServiceImpl implements ContractService {
 		return returnValue;
 	}
 
+	@Override
+	public ArrayList<ContractDetailsResponseModel> deleteMultipleContracts(ArrayList<String> contracts) {
+		ArrayList<ContractDetailsResponseModel> returnValue = new ArrayList<ContractDetailsResponseModel>();
+		for(String contract: contracts) {
+			ContractEntity storedContract = contractRepository.findContractByContractNo(contract);
+			if(storedContract == null) throw new RuntimeException("Contract with number " + contract + " not found!");
+
+			contractRepository.delete(storedContract);
+
+			ContractDetailsResponseModel currentContract = new ContractDetailsResponseModel();
+			BeanUtils.copyProperties(storedContract, currentContract);
+			returnValue.add(currentContract);
+		}
+		return returnValue;
+	}
+
 }

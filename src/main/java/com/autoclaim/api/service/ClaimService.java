@@ -15,4 +15,5 @@ public interface ClaimService {
 	public ArrayList<ClaimDetailsResponseModel> getSomeContractClaims(String contractNo, int page, int limit);
 	public ArrayList<ClaimDetailsResponseModel> getAllClaims();
 	public ArrayList<ClaimDetailsResponseModel> getSomeClaims(int page, int limit);
+	public ArrayList<ClaimDetailsResponseModel> deleteMultipleClaims(ArrayList<String> claims);
 }
