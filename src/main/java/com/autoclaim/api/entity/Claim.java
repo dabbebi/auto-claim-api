@@ -18,7 +18,7 @@ import com.autoclaim.api.enums.ClaimStatus;
 
 @Entity
 @Table(name="claim")
-public class ClaimEntity {
+public class Claim {
 	
 	@Id
 	@GeneratedValue
@@ -40,13 +40,13 @@ public class ClaimEntity {
 	@JoinTable(name = "contract_claim",
     joinColumns = @JoinColumn(name = "claim_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id"))
-	private ContractEntity contract;
+	private Contract contract;
 	
-	@OneToMany(cascade = CascadeType.REMOVE)
+	@OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "claim_picture",
     joinColumns = @JoinColumn(name = "claim_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "picture_id", referencedColumnName = "id"))
-    private Set<PictureEntity> pictures;
+    private Set<Picture> pictures;
 
 	public Long getId() {
 		return id;
@@ -88,19 +88,19 @@ public class ClaimEntity {
 		this.status = status;
 	}
 
-	public ContractEntity getContract() {
+	public Contract getContract() {
 		return contract;
 	}
 
-	public void setContract(ContractEntity contract) {
+	public void setContract(Contract contract) {
 		this.contract = contract;
 	}
 
-	public Set<PictureEntity> getPictures() {
+	public Set<Picture> getPictures() {
 		return pictures;
 	}
 
-	public void setPictures(Set<PictureEntity> pictures) {
+	public void setPictures(Set<Picture> pictures) {
 		this.pictures = pictures;
 	}
 

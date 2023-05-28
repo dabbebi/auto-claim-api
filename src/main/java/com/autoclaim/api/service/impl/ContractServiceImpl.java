@@ -11,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.autoclaim.api.entity.ContractEntity;
+import com.autoclaim.api.entity.Contract;
 import com.autoclaim.api.model.request.ContractDetailsRequestModel;
 import com.autoclaim.api.model.response.ContractDetailsResponseModel;
 import com.autoclaim.api.repository.ContractRepository;
@@ -38,12 +38,12 @@ public class ContractServiceImpl implements ContractService {
 
 	public ContractDetailsResponseModel createContract(ContractDetailsRequestModel contract) {
 		
-		ContractEntity contractEntity = new ContractEntity();
+		Contract contractEntity = new Contract();
 		BeanUtils.copyProperties(contract, contractEntity);
 
 		contractEntity.setContractNo(generateNextContractNumber(contractEntity.getStartDate()));
 		
-		ContractEntity createdContract = contractRepository.save(contractEntity);
+		Contract createdContract = contractRepository.save(contractEntity);
 		
 		ContractDetailsResponseModel returnValue = new ContractDetailsResponseModel();
 		BeanUtils.copyProperties(createdContract, returnValue);
@@ -53,7 +53,7 @@ public class ContractServiceImpl implements ContractService {
 
 	public ContractDetailsResponseModel updateContract(String contractNo, ContractDetailsRequestModel contract) {
 		
-		ContractEntity storedContract = contractRepository.findContractByContractNo(contractNo);
+		Contract storedContract = contractRepository.findContractByContractNo(contractNo);
 		if(storedContract == null) throw new RuntimeException("Contract with number " + contractNo + " not found!");
 		
 		BeanUtils.copyProperties(contract, storedContract);
@@ -66,7 +66,7 @@ public class ContractServiceImpl implements ContractService {
 	}
 
 	public ContractDetailsResponseModel getContract(String contractNo) {
-		ContractEntity storedContract = contractRepository.findContractByContractNo(contractNo);
+		Contract storedContract = contractRepository.findContractByContractNo(contractNo);
 		if(storedContract == null) throw new RuntimeException("Contract with number " + contractNo + " not found!");
 		
 		ContractDetailsResponseModel returnValue = new ContractDetailsResponseModel();
@@ -76,7 +76,7 @@ public class ContractServiceImpl implements ContractService {
 	}
 
 	public ContractDetailsResponseModel deleteContract(String contractNo) {
-		ContractEntity storedContract = contractRepository.findContractByContractNo(contractNo);
+		Contract storedContract = contractRepository.findContractByContractNo(contractNo);
 		if(storedContract == null) throw new RuntimeException("Contract with number " + contractNo + " not found!");
 		
 		contractRepository.delete(storedContract);
@@ -89,13 +89,13 @@ public class ContractServiceImpl implements ContractService {
 
 	public ArrayList<ContractDetailsResponseModel> getAllContracts() {
 
-		ArrayList<ContractEntity> allContracts = (ArrayList<ContractEntity>) contractRepository.findAll();
+		ArrayList<Contract> allContracts = (ArrayList<Contract>) contractRepository.findAll();
 		
 		ArrayList<ContractDetailsResponseModel> returnValue = new ArrayList<ContractDetailsResponseModel>();
 		
-		for(ContractEntity contractEntity: allContracts) {
+		for(Contract contract : allContracts) {
 			ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
-			BeanUtils.copyProperties(contractEntity, tempContract);
+			BeanUtils.copyProperties(contract, tempContract);
 			returnValue.add(tempContract);
 		}
 		
@@ -106,14 +106,14 @@ public class ContractServiceImpl implements ContractService {
 	public ArrayList<ContractDetailsResponseModel> getSomeContracts(int page, int limit) {
 
 		Pageable pageable = PageRequest.of(page, limit);
-		Page<ContractEntity> contractsPage = contractRepository.findAll(pageable);
-		List<ContractEntity> allContracts = contractsPage.getContent();
+		Page<Contract> contractsPage = contractRepository.findAll(pageable);
+		List<Contract> allContracts = contractsPage.getContent();
 
 		ArrayList<ContractDetailsResponseModel> returnValue = new ArrayList<>();
 
-		for(ContractEntity contractEntity: allContracts) {
+		for(Contract contract : allContracts) {
 			ContractDetailsResponseModel tempContract = new ContractDetailsResponseModel();
-			BeanUtils.copyProperties(contractEntity, tempContract);
+			BeanUtils.copyProperties(contract, tempContract);
 			returnValue.add(tempContract);
 		}
 
@@ -124,7 +124,7 @@ public class ContractServiceImpl implements ContractService {
 	public ArrayList<ContractDetailsResponseModel> deleteMultipleContracts(ArrayList<String> contracts) {
 		ArrayList<ContractDetailsResponseModel> returnValue = new ArrayList<ContractDetailsResponseModel>();
 		for(String contract: contracts) {
-			ContractEntity storedContract = contractRepository.findContractByContractNo(contract);
+			Contract storedContract = contractRepository.findContractByContractNo(contract);
 			if(storedContract == null) throw new RuntimeException("Contract with number " + contract + " not found!");
 
 			contractRepository.delete(storedContract);

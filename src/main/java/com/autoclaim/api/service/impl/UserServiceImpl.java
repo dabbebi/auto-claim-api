@@ -9,13 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.autoclaim.api.entity.UserEntity;
+import com.autoclaim.api.entity.User;
 import com.autoclaim.api.model.request.UserDetailsRequestModel;
 import com.autoclaim.api.model.request.UserPwdUpdateRequestModel;
 import com.autoclaim.api.model.response.UserDetailsResponseModel;
@@ -41,29 +40,29 @@ public class UserServiceImpl implements UserService {
 		if(userRepository.findUserByEmail(user.getEmail()) != null)
 			throw new RuntimeException("Email already in use!");
 		
-		UserEntity userEntity = new UserEntity();
+		User userEntity = new User();
 		BeanUtils.copyProperties(user, userEntity);
 		
 		userEntity.setPublicId(utils.generateRandomString(30));
 		userEntity.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		
 		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
-		UserEntity createdUser = userRepository.save(userEntity);
+		User createdUser = userRepository.save(userEntity);
 		BeanUtils.copyProperties(createdUser, returnValue);
 		
 		return returnValue;
 	}
 
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		UserEntity userEntity = userRepository.findUserByEmail(email);
+		User userEntity = userRepository.findUserByEmail(email);
 		
 		if(userEntity == null) throw new UsernameNotFoundException(email);
 		
-		return new User(userEntity.getEmail(), userEntity.getPassword(), new ArrayList<GrantedAuthority>());
+		return new org.springframework.security.core.userdetails.User(userEntity.getEmail(), userEntity.getPassword(), new ArrayList<GrantedAuthority>());
 	}
 
 	public UserDetailsResponseModel getUser(String email) {
-		UserEntity userEntity = userRepository.findUserByEmail(email);
+		User userEntity = userRepository.findUserByEmail(email);
 		
 		if(userEntity == null) throw new UsernameNotFoundException(email);
 		
@@ -75,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
 	public UserDetailsResponseModel getUserByPublicId(String publicId) {
 
-		UserEntity storedUser = userRepository.findUserByPublicId(publicId);
+		User storedUser = userRepository.findUserByPublicId(publicId);
 		
 		if(storedUser == null) throw new RuntimeException("User with public id " + publicId + " not found!");
 		
@@ -86,10 +85,10 @@ public class UserServiceImpl implements UserService {
 
 	public ArrayList<UserDetailsResponseModel> getAllUsers() {
 		
-		ArrayList<UserEntity> allUsers = (ArrayList<UserEntity>) userRepository.findAll();
+		ArrayList<User> allUsers = (ArrayList<User>) userRepository.findAll();
 		ArrayList<UserDetailsResponseModel> returnValue = new ArrayList<UserDetailsResponseModel>();
 		
-		for(UserEntity userEntity: allUsers) {
+		for(User userEntity: allUsers) {
 			UserDetailsResponseModel tempUser = new UserDetailsResponseModel();
 			BeanUtils.copyProperties(userEntity, tempUser);
 			returnValue.add(tempUser);
@@ -100,11 +99,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ArrayList<UserDetailsResponseModel> getSomeUsers(int page, int limit) {
 		Pageable pageableRequest = (Pageable) PageRequest.of(page, limit);
-		Page<UserEntity> usersPage = userRepository.findAll(pageableRequest);
-		List<UserEntity> allUsers = usersPage.getContent();
+		Page<User> usersPage = userRepository.findAll(pageableRequest);
+		List<User> allUsers = usersPage.getContent();
 		ArrayList<UserDetailsResponseModel> returnValue = new ArrayList<>();
 
-		for(UserEntity userEntity: allUsers) {
+		for(User userEntity: allUsers) {
 			UserDetailsResponseModel tempUser = new UserDetailsResponseModel();
 			BeanUtils.copyProperties(userEntity, tempUser);
 			returnValue.add(tempUser);
@@ -114,7 +113,7 @@ public class UserServiceImpl implements UserService {
 
 	public UserDetailsResponseModel updateUser(String publicId, UserDetailsRequestModel user) {
 		
-		UserEntity storedUser= userRepository.findUserByPublicId(publicId);
+		User storedUser= userRepository.findUserByPublicId(publicId);
 		if(storedUser == null) throw new RuntimeException("User with public id " + publicId + " not found!");
 		
 		storedUser.setAddress(user.getAddress());
@@ -122,7 +121,7 @@ public class UserServiceImpl implements UserService {
 		storedUser.setLastName(user.getLastName());
 		storedUser.setTelephone(user.getTelephone());
 		
-		UserEntity updatedUser = userRepository.save(storedUser);
+		User updatedUser = userRepository.save(storedUser);
 		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
 		BeanUtils.copyProperties(updatedUser, returnValue);
 		
@@ -131,7 +130,7 @@ public class UserServiceImpl implements UserService {
 
 	public UserDetailsResponseModel deleteUser(String publicId) {
 		
-		UserEntity storedUser= userRepository.findUserByPublicId(publicId);
+		User storedUser= userRepository.findUserByPublicId(publicId);
 		if(storedUser == null) throw new RuntimeException("User with public id " + publicId + " not found!");
 		
 		userRepository.delete(storedUser);
@@ -143,7 +142,7 @@ public class UserServiceImpl implements UserService {
 
 	public UserDetailsResponseModel updatePassword(String publicId, UserPwdUpdateRequestModel passwordDetails) {
 
-		UserEntity storedUser= userRepository.findUserByPublicId(publicId);
+		User storedUser= userRepository.findUserByPublicId(publicId);
 		if(storedUser == null) throw new RuntimeException("User with public id " + publicId + " not found!");
 		
 		String stoderPassword = storedUser.getPassword();

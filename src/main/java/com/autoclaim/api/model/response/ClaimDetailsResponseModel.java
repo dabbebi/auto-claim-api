@@ -11,7 +11,7 @@ public class ClaimDetailsResponseModel {
 	private Date creationDate;
 	private ClaimStatus status;
 	private ContractDetailsResponseModel contract;
-    private ArrayList<String> pictures;
+    private ArrayList<PictureDetailsResponseModel> pictures;
     
 	public String getClaimNo() {
 		return claimNo;
@@ -43,10 +43,10 @@ public class ClaimDetailsResponseModel {
 	public void setContract(ContractDetailsResponseModel contractNo) {
 		this.contract = contractNo;
 	}
-	public ArrayList<String> getPictures() {
+	public ArrayList<PictureDetailsResponseModel> getPictures() {
 		return pictures;
 	}
-	public void setPictures(ArrayList<String> pictures) {
+	public void setPictures(ArrayList<PictureDetailsResponseModel> pictures) {
 		this.pictures = pictures;
 	}
     

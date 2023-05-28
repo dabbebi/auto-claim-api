@@ -11,11 +11,14 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="picture")
-public class PictureEntity {
+public class Picture {
 	
 	@Id
 	@GeneratedValue
 	private Long id;
+
+	@Column(nullable = false)
+	private String publicId;
 	
 	@Column(nullable=false)
 	private String path;
@@ -24,7 +27,7 @@ public class PictureEntity {
 	@JoinTable(name = "claim_picture",
     joinColumns = @JoinColumn(name = "picture_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "claim_id", referencedColumnName = "id"))
-    private ClaimEntity claim;
+    private Claim claim;
 
 	public Long getId() {
 		return id;
@@ -32,6 +35,14 @@ public class PictureEntity {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getPublicId() {
+		return publicId;
+	}
+
+	public void setPublicId(String publicId) {
+		this.publicId = publicId;
 	}
 
 	public String getPath() {
@@ -42,11 +53,11 @@ public class PictureEntity {
 		this.path = path;
 	}
 
-	public ClaimEntity getClaim() {
+	public Claim getClaim() {
 		return claim;
 	}
 
-	public void setClaim(ClaimEntity claim) {
+	public void setClaim(Claim claim) {
 		this.claim = claim;
 	}
 }

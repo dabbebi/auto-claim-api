@@ -20,7 +20,7 @@ public class ClaimDetailsRequestModel {
 	@NotNull
 	private ClaimStatus status;
 
-    private ArrayList<String> pictures;
+    private ArrayList<PictureDetailsRequestModel> pictures;
     
 	public Date getAccidentDate() {
 		return accidentDate;
@@ -34,10 +34,10 @@ public class ClaimDetailsRequestModel {
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
 	}
-	public ArrayList<String> getPictures() {
+	public ArrayList<PictureDetailsRequestModel> getPictures() {
 		return pictures;
 	}
-	public void setPictures(ArrayList<String> pictures) {
+	public void setPictures(ArrayList<PictureDetailsRequestModel> pictures) {
 		this.pictures = pictures;
 	}
 

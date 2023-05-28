@@ -1,9 +1,11 @@
 package com.autoclaim.api.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.validation.Valid;
 
+import com.autoclaim.api.model.request.ClaimUpdateDetailsRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,7 +58,7 @@ public class ClaimController {
 	}
 	
 	@PutMapping(path="/{id}")
-	public ClaimDetailsResponseModel updateClaim(@PathVariable String id, @Valid @RequestBody ClaimDetailsRequestModel claim) {
+	public ClaimDetailsResponseModel updateClaim(@PathVariable String id, @Valid @RequestBody ClaimUpdateDetailsRequestModel claim) throws IOException {
 		return claimService.updateClaim(id, claim);
 	}
 	

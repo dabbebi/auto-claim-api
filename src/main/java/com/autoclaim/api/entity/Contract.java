@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="contract")
-public class ContractEntity {
+public class Contract {
 
 	@Id
 	@GeneratedValue
@@ -37,11 +37,11 @@ public class ContractEntity {
 	@Column(length=16)
 	private String VehicleRegistrationNo;
 	
-	@OneToMany(cascade = CascadeType.REMOVE)
+	@OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "contract_claim",
     joinColumns = @JoinColumn(name = "contract_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "claim_id", referencedColumnName = "id"))
-    private Set<ClaimEntity> claims;
+    private Set<Claim> claims;
 
 	public String getInsuredName() {
 		return insuredName;
@@ -51,11 +51,11 @@ public class ContractEntity {
 		this.insuredName = insuredName;
 	}
 
-	public Set<ClaimEntity> getClaims() {
+	public Set<Claim> getClaims() {
 		return claims;
 	}
 
-	public void setClaims(Set<ClaimEntity> claims) {
+	public void setClaims(Set<Claim> claims) {
 		this.claims = claims;
 	}
 

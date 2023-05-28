@@ -9,12 +9,12 @@ import com.autoclaim.api.model.request.UserPwdUpdateRequestModel;
 import com.autoclaim.api.model.response.UserDetailsResponseModel;
 
 public interface UserService extends UserDetailsService {
-	public UserDetailsResponseModel createUser(UserDetailsRequestModel user);
-	public UserDetailsResponseModel getUser(String email);
-	public UserDetailsResponseModel getUserByPublicId(String publicId);
-	public ArrayList<UserDetailsResponseModel> getAllUsers();
-	public ArrayList<UserDetailsResponseModel> getSomeUsers(int page, int limit);
-	public UserDetailsResponseModel updateUser(String publicId, UserDetailsRequestModel user);
-	public UserDetailsResponseModel updatePassword(String publicId, UserPwdUpdateRequestModel passwordDetails);
-	public UserDetailsResponseModel deleteUser(String publicId);
+	UserDetailsResponseModel createUser(UserDetailsRequestModel user);
+	UserDetailsResponseModel getUser(String email);
+	UserDetailsResponseModel getUserByPublicId(String publicId);
+	ArrayList<UserDetailsResponseModel> getAllUsers();
+	ArrayList<UserDetailsResponseModel> getSomeUsers(int page, int limit);
+	UserDetailsResponseModel updateUser(String publicId, UserDetailsRequestModel user);
+	UserDetailsResponseModel updatePassword(String publicId, UserPwdUpdateRequestModel passwordDetails);
+	UserDetailsResponseModel deleteUser(String publicId);
 }

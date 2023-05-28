@@ -4,12 +4,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import com.autoclaim.api.entity.ContractEntity;
+import com.autoclaim.api.entity.Contract;
 
 @Repository
-public interface ContractRepository extends PagingAndSortingRepository<ContractEntity, Long> {
-	public ContractEntity findContractByContractNo(String contractNo);
+public interface ContractRepository extends PagingAndSortingRepository<Contract, Long> {
 
-	@Query("select max(t.id) from ContractEntity t")
-	public int getMaxId();
+	Contract findContractByContractNo(String contractNo);
+
+	@Query("select COALESCE(max(t.id), 0) from Contract t")
+	int getMaxId();
+
+	@Query("select count(*) from Contract t")
+	int getContractCount();
 }
