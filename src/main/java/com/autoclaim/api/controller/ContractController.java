@@ -42,6 +42,11 @@ public class ContractController {
 	public ArrayList<ContractDetailsResponseModel> getSomeContracts(@RequestParam(value = "page") int page, @RequestParam(value = "limit") int limit) {
 		return contractService.getSomeContracts(page, limit);
 	}
+
+	@GetMapping(path = "/contractNo/{id}")
+	ArrayList<String> getAllContractNo(@PathVariable String id) {
+		return contractService.getALlContractNo(id);
+	}
 	
 	@PutMapping(path="/{id}")
 	public ContractDetailsResponseModel updateContract(@PathVariable String id, @Valid @RequestBody ContractDetailsRequestModel contract) {

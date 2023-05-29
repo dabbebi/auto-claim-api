@@ -47,17 +47,6 @@ public class ClaimServiceImpl implements ClaimService {
 	@Autowired
 	ModelMapper modelMapper;
 
-	private String generateNextClaimNumber() {
-
-		int max = claimRepository.getMaxId();
-		String currentYearStr = String.valueOf((new Date()).getYear());
-		if(currentYearStr.length() > 2) {
-			currentYearStr = currentYearStr.substring(currentYearStr.length() - 2);
-		}
-
-		String claimNo = "CL-" + Long.toString(max + 1) + "-" + currentYearStr;
-		return claimNo;
-	}
 	public ClaimDetailsResponseModel createClaim(ClaimDetailsRequestModel claim) {
 		Contract contract = contractRepository.findContractByContractNo(claim.getContractNo());
 		if(contract == null) throw new RuntimeException("Contract with number " + claim.getContractNo() + " not found!");
@@ -67,7 +56,6 @@ public class ClaimServiceImpl implements ClaimService {
 
 		claimEntity.setCreationDate(new Date());
 		claimEntity.setContract(contract);
-		claimEntity.setClaimNo(generateNextClaimNumber());
 
 		if(claim.getPictures() != null) {
 			Set<Picture> pictures = new HashSet<>();

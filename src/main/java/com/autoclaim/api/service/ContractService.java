@@ -13,4 +13,5 @@ public interface ContractService {
 	ArrayList<ContractDetailsResponseModel> getAllContracts();
 	ArrayList<ContractDetailsResponseModel> getSomeContracts(int page, int limit);
 	ArrayList<ContractDetailsResponseModel> deleteMultipleContracts(ArrayList<String> contracts);
+	ArrayList<String> getALlContractNo(String id);
 }

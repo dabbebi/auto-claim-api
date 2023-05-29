@@ -23,25 +23,10 @@ public class ContractServiceImpl implements ContractService {
 	@Autowired
 	ContractRepository contractRepository;
 
-	private String generateNextContractNumber(Date starDate) {
-
-		int currentYear = starDate.getYear();
-		int max = contractRepository.getMaxId();
-		String currentYearStr = String.valueOf(currentYear);
-		if(currentYearStr.length() > 2) {
-			currentYearStr = currentYearStr.substring(currentYearStr.length() - 2);
-		}
-
-		String contractNo = "CN-" + Long.toString(max + 1) + "-" + currentYearStr;
-		return contractNo;
-	}
-
 	public ContractDetailsResponseModel createContract(ContractDetailsRequestModel contract) {
 		
 		Contract contractEntity = new Contract();
 		BeanUtils.copyProperties(contract, contractEntity);
-
-		contractEntity.setContractNo(generateNextContractNumber(contractEntity.getStartDate()));
 		
 		Contract createdContract = contractRepository.save(contractEntity);
 		
@@ -133,6 +118,13 @@ public class ContractServiceImpl implements ContractService {
 			BeanUtils.copyProperties(storedContract, currentContract);
 			returnValue.add(currentContract);
 		}
+		return returnValue;
+	}
+
+	@Override
+	public ArrayList<String> getALlContractNo(String id) {
+		ArrayList<String> returnValue = contractRepository.getAllContractNo(id);
+
 		return returnValue;
 	}
 

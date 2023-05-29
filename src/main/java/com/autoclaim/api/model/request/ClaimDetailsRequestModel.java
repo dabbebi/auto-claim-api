@@ -6,11 +6,16 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 
 import com.autoclaim.api.enums.ClaimStatus;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
 public class ClaimDetailsRequestModel {
-	
+
+	@NotNull
+	@Length(min=3, max=25)
+	private String claimNo;
+
 	@NotNull
 	private Date accidentDate;
 	
@@ -21,7 +26,15 @@ public class ClaimDetailsRequestModel {
 	private ClaimStatus status;
 
     private ArrayList<PictureDetailsRequestModel> pictures;
-    
+
+	public String getClaimNo() {
+		return claimNo;
+	}
+
+	public void setClaimNo(String claimNo) {
+		this.claimNo = claimNo;
+	}
+
 	public Date getAccidentDate() {
 		return accidentDate;
 	}
